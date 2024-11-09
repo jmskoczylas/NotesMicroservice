@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31205.134
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.34928.147
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{AA895DBF-63E5-4BCA-BD3E-05FDF7AB85F8}"
 EndProject
@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application", "src\Applicat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "src\Infrastructure\Infrastructure.csproj", "{B1AA269D-A857-4C6A-87C8-1935CD084ADB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.UnitTests", "tests\Application.UnitTests\Application.UnitTests.csproj", "{0ABBAEA0-9B9F-4A2E-B648-42ED130586B0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.UnitTests", "tests\Application.UnitTests\Application.UnitTests.csproj", "{0ABBAEA0-9B9F-4A2E-B648-42ED130586B0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Presentation", "src\Presentation\Presentation.csproj", "{76AF74F8-5190-4A6A-9360-C7C0773C4537}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,6 +39,10 @@ Global
 		{0ABBAEA0-9B9F-4A2E-B648-42ED130586B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0ABBAEA0-9B9F-4A2E-B648-42ED130586B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0ABBAEA0-9B9F-4A2E-B648-42ED130586B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76AF74F8-5190-4A6A-9360-C7C0773C4537}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76AF74F8-5190-4A6A-9360-C7C0773C4537}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76AF74F8-5190-4A6A-9360-C7C0773C4537}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76AF74F8-5190-4A6A-9360-C7C0773C4537}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -46,6 +52,7 @@ Global
 		{9A44949A-A86A-4FD4-BF33-6A388F7E294B} = {AA895DBF-63E5-4BCA-BD3E-05FDF7AB85F8}
 		{B1AA269D-A857-4C6A-87C8-1935CD084ADB} = {AA895DBF-63E5-4BCA-BD3E-05FDF7AB85F8}
 		{0ABBAEA0-9B9F-4A2E-B648-42ED130586B0} = {ABEBE81E-CCAD-489D-8543-05779905F7B4}
+		{76AF74F8-5190-4A6A-9360-C7C0773C4537} = {AA895DBF-63E5-4BCA-BD3E-05FDF7AB85F8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B6421D98-5F94-4B9F-82E0-CD7DE786D7EE}
