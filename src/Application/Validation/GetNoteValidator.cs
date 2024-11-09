@@ -13,7 +13,7 @@ namespace Application.Validation
         /// </summary>
         public GetNoteValidator()
         {
-            RuleFor(x => x.Id).LessThanOrEqualTo(int.MaxValue).GreaterThan(0);
+            RuleFor(x => x.Id).GreaterThan(0).LessThanOrEqualTo(int.MaxValue);
         }
     }
 }

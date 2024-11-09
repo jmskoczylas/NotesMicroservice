@@ -1,5 +1,5 @@
-﻿using FluentResults;
-using Infrastructure.Models;
+﻿using Application.DTOs;
+using FluentResults;
 using MediatR;
 
 namespace Application.Requests

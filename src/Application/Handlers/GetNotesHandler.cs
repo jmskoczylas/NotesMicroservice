@@ -1,8 +1,8 @@
-﻿using Application.Requests;
+﻿using Application.DTOs;
+using Application.Requests;
 using AutoMapper;
+using Domain.Interfaces;
 using FluentResults;
-using Infrastructure.Interfaces;
-using Infrastructure.Models;
 using MediatR;
 using System;
 using System.Collections.Generic;

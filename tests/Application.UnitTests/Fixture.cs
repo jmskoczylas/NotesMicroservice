@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Domain.Interfaces;
-using Infrastructure.Interfaces;
 using Infrastructure.Mappings;
 using Infrastructure.Models;
 using NSubstitute;

@@ -1,11 +1,9 @@
-﻿using Application.Requests;
-using Infrastructure.Models;
+﻿using Application.DTOs;
+using Application.Requests;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Threading.Tasks;
 
-namespace Application.Controllers
+namespace NotesMicroservice.WebApi.Controllers
 {
     /// <summary>
     /// API controller used for performing CRUD operations and archiving a note.

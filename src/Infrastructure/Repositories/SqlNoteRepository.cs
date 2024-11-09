@@ -2,7 +2,6 @@
 using Dapper;
 using Domain.Interfaces;
 using FluentResults;
-using Infrastructure.Interfaces;
 using Infrastructure.Models;
 using Infrastructure.Tracing;
 using Microsoft.Extensions.Logging;

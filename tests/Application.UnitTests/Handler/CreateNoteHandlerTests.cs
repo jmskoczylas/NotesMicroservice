@@ -1,12 +1,12 @@
 ﻿using Application.Handlers;
 using Application.Requests;
+using Application.UnitTests;
 using Domain.Interfaces;
 using FluentResults;
 using NSubstitute;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Application.UnitTests;
 using Xunit;
 
 namespace Application.Tests.Handler

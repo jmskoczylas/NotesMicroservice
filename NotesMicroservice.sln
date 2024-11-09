@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "src\Infra
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.UnitTests", "tests\Application.UnitTests\Application.UnitTests.csproj", "{0ABBAEA0-9B9F-4A2E-B648-42ED130586B0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Presentation", "src\Presentation\Presentation.csproj", "{76AF74F8-5190-4A6A-9360-C7C0773C4537}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NotesMicroservice.WebApi", "src\Presentation\NotesMicroservice.WebApi.csproj", "{76AF74F8-5190-4A6A-9360-C7C0773C4537}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,9 +1,8 @@
-﻿using Domain.Interfaces;
-using FluentResults;
+﻿using FluentResults;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Infrastructure.Interfaces
+namespace Domain.Interfaces
 {
     /// <summary>
     /// Represents the note repository for interacting with the data store..

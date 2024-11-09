@@ -1,7 +1,7 @@
-﻿using FluentResults;
+﻿using Application.DTOs;
+using FluentResults;
 using MediatR;
 using System.Collections.Generic;
-using Infrastructure.Models;
 
 namespace Application.Requests
 {

@@ -1,6 +1,6 @@
 ﻿using Application.Requests;
+using Domain.Interfaces;
 using FluentResults;
-using Infrastructure.Interfaces;
 using MediatR;
 using System;
 using System.Threading;

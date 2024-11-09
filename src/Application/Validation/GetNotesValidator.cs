@@ -13,8 +13,8 @@ namespace Application.Validation
         /// </summary>
         public GetNotesValidator()
         {
-            RuleFor(x => x.Page).GreaterThanOrEqualTo(0);
-            RuleFor(x => x.PageSize).GreaterThan(0);
+            RuleFor(x => x.Page).GreaterThanOrEqualTo(1);
+            RuleFor(x => x.PageSize).GreaterThanOrEqualTo(1);
         }
     }
 }
