@@ -1,9 +1,9 @@
-﻿using AutoMapper;
+﻿using Application.DTOs;
+using Application.Mappings.Converters;
+using AutoMapper;
 using Domain.Entities;
-using Infrastructure.Mappings.Converters;
-using Infrastructure.Models;
 
-namespace Infrastructure.Mappings
+namespace Application.Mappings
 {
     /// <summary>
     /// Used to configure how automapper will map note objects.
@@ -16,8 +16,7 @@ namespace Infrastructure.Mappings
         /// </summary>
         public MapperProfile()
         {
-            this.CreateMap<StandardNote, NoteEntity>().ConvertUsing<StandardNoteToNoteEntityConverter>();
-            this.CreateMap<NoteEntity, StandardNote>().ConvertUsing<NoteEntityToStandardNoteConverter>();
+            this.CreateMap<StandardNote, NoteDto>().ConvertUsing<StandardNoteToNoteDtoConverter>();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Interfaces;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Application.DTOs
@@ -6,7 +7,7 @@ namespace Application.DTOs
     /// <summary>
     /// A dto for the note object.
     /// </summary>
-    public class NoteDto
+    public class NoteDto : INote
     {
         /// <summary>
         /// Gets or sets the identifier.
@@ -28,11 +29,11 @@ namespace Application.DTOs
         /// <summary>
         /// Gets the date and time the entity was created.
         /// </summary>
-        public DateTime? CreatedOn { get; set; }
+        public DateTime CreatedOn { get; set; }
 
         /// <summary>
         /// Gets the date and time the entity was last modified.
         /// </summary>
-        public DateTime? ModifiedOn { get; set; }
+        public DateTime ModifiedOn { get; set; }
     }
 }

@@ -19,6 +19,7 @@ builder.Configuration
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices();
 builder.Services.AddControllers();
+
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo() { Title = "NotesMicroservice.WebApi", Version = "v1" });

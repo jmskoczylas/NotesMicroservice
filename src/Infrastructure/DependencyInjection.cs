@@ -1,7 +1,7 @@
 ﻿using Domain.Interfaces;
-using Infrastructure.Mappings;
 using Infrastructure.Repositories;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 
 namespace Infrastructure
 {
@@ -9,8 +9,8 @@ namespace Infrastructure
     {
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services)
         {
-            services.AddSingleton<INoteRepository, SqlNoteRepository>();
-            services.AddAutoMapper(typeof(MapperProfile));
+            services.AddSingleton<INoteRepository, TextFileNoteRepository>();
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             return services;
         }

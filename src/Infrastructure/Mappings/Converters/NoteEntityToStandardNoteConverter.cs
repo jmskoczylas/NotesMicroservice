@@ -2,7 +2,7 @@
 using Domain.Entities;
 using Infrastructure.Models;
 
-namespace Application.Mappings.Converters
+namespace Infrastructure.Mappings.Converters
 {
     /// <summary>
     /// Converts an instance of a <see cref="NoteEntity"/> to an <see cref="StandardNote"/> instance.
