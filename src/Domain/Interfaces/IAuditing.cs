@@ -7,11 +7,11 @@ namespace Domain.Interfaces
         /// <summary>
         /// Gets the date and time the entity was created.
         /// </summary>
-        public DateTime? CreatedOn { get; }
+        public DateTime CreatedOn { get; }
 
         /// <summary>
         /// Gets the date and time the entity was last modified.
         /// </summary>
-        public DateTime? ModifiedOn { get; }
+        public DateTime ModifiedOn { get; }
     }
 }

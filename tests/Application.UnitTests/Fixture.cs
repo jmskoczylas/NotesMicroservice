@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using Application.DTOs;
+using AutoMapper;
+using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure.Mappings;
 using Infrastructure.Models;
@@ -10,7 +12,7 @@ namespace Application.UnitTests
     public class Fixture
     {
         public INoteRepository NoteRepository { get; }
-        public NoteRepositoryDto NoteRepositoryDto { get; }
+        public NoteEntity NoteEntity { get; }
         public IMapper Mapper { get; }
         public INote Note { get; }
         public NoteDto NoteDto { get; }
@@ -18,7 +20,7 @@ namespace Application.UnitTests
         public Fixture()
         {
             this.NoteRepository = Substitute.For<INoteRepository>();
-            this.Note = new Note(474, "name", "the notes",
+            this.Note = new StandardNote(474, "name", "the notes",
                 DateTime.UtcNow, DateTime.UtcNow);
 
             this.NoteDto = new NoteDto()
@@ -30,14 +32,7 @@ namespace Application.UnitTests
                 Text = this.Note.Text
             };
 
-            this.NoteRepositoryDto = new NoteRepositoryDto()
-            {
-                Id = this.Note.Id,
-                Title = this.Note.Title,
-                Text = this.Note.Text,
-                CreatedOn = this.Note.CreatedOn,
-                ModifiedOn = this.Note.ModifiedOn,
-            };
+            this.NoteEntity = new NoteEntity(this.Note.Id, this.Note.Title, this.Note.Text, this.Note.CreatedOn, this.Note.ModifiedOn);
 
             var mappingConfig = new MapperConfiguration(mc =>
             {

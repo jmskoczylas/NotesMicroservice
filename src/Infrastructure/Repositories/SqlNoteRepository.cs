@@ -56,7 +56,7 @@ namespace Infrastructure.Repositories
 
             var connection = this.GetConnection();
             var createdNote =
-                await connection.QueryFirstOrDefaultAsync<NoteRepositoryDto>(createNoteSql, parameters);
+                await connection.QueryFirstOrDefaultAsync<NoteEntity>(createNoteSql, parameters);
 
             if (createdNote == null)
             {
@@ -202,7 +202,7 @@ namespace Infrastructure.Repositories
 
             const string getPagedNotesSql = "SELECT Id, Title, Text, CreatedOn, ModifiedOn FROM notes ORDER BY Id ASC OFFSET @pageSize * (@pageNumber - 1) ROWS FETCH NEXT @pageSize ROWS ONLY";
 
-            var result = await connection.QueryAsync<NoteRepositoryDto>(getPagedNotesSql, parameters);
+            var result = await connection.QueryAsync<NoteEntity>(getPagedNotesSql, parameters);
             if (result == null || !result.Any())
             {
                 if (!_logger.IsEnabled(LogLevel.Warning)) return null;
@@ -245,7 +245,7 @@ namespace Infrastructure.Repositories
             parameters.Add("@id", noteId);
 
             var connection = this.GetConnection();
-            var result = await connection.QueryFirstOrDefaultAsync<NoteRepositoryDto>(getNoteSql, parameters);
+            var result = await connection.QueryFirstOrDefaultAsync<NoteEntity>(getNoteSql, parameters);
             if (result == null)
             {
                 activity?.SetIsSuccess(false);

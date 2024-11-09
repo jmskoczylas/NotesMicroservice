@@ -2,6 +2,7 @@
 using Application.Requests;
 using Application.UnitTests;
 using Domain.Interfaces;
+using Application.DTOs;
 using FluentResults;
 using NSubstitute;
 using System;

@@ -13,12 +13,12 @@ namespace Domain.Entities
         /// </summary>
         /// <param name="id">The Id of the note.</param>
         /// <param name="title">The title of the note.</param>
-        /// <param name="notes">The note notes.</param>
+        /// <param name="text">The note text.</param>
         /// <param name="createdOn">The <see cref="DateTime"/> when the note was created.</param>
         /// <param name="modifiedOn">The <see cref="DateTime"/> when the note was last modified.</param>
         /// <exception cref="ArgumentOutOfRangeException">id</exception>
         /// <exception cref="ArgumentNullException">title</exception>
-        protected Note(int id, string title, string notes, DateTime? createdOn, DateTime? modifiedOn)
+        protected Note(int id, string title, string text, DateTime createdOn, DateTime modifiedOn)
         {
             if (id < 0) throw new ArgumentOutOfRangeException(nameof(id));
 
@@ -27,7 +27,7 @@ namespace Domain.Entities
                 throw new ArgumentNullException(nameof(title));
             }
 
-            Text = notes;
+            Text = text;
             Id = id;
             Title = title;
             CreatedOn = createdOn;
@@ -44,9 +44,9 @@ namespace Domain.Entities
         public string Text { get; }
 
         /// <inheritdoc />
-        public DateTime? CreatedOn { get; }
+        public DateTime CreatedOn { get; }
 
         /// <inheritdoc />
-        public DateTime? ModifiedOn { get; }
+        public DateTime ModifiedOn { get; }
     }
 }

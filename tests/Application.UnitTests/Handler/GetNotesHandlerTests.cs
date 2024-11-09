@@ -37,7 +37,7 @@ namespace Application.UnitTests.Handler
                 this.Note,
                 this.Note,
                 this.Note,
-                new Note(101, "last note", "some text", DateTime.UtcNow, null)
+                new NoteEntity(101, "last note", "some text", DateTime.UtcNow, DateTime.UtcNow)
             };
 
             IReadOnlyCollection<INote> page2 = notes.TakeLast(3).ToList();

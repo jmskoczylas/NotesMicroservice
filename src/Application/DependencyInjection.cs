@@ -1,6 +1,6 @@
-﻿using Application.Validation;
+﻿using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
-using FluentValidation;
+using System.Reflection;
 
 namespace Application
 {
@@ -8,7 +8,7 @@ namespace Application
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
-            services.AddValidatorsFromAssemblyContaining<CreateNoteValidator>(); // register validators
+            services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
             return services;
         }

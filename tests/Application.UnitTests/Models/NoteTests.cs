@@ -1,5 +1,4 @@
-﻿using Application.Tests;
-using Infrastructure.Models;
+﻿using Infrastructure.Models;
 using System;
 using Xunit;
 
@@ -10,7 +9,7 @@ namespace Application.UnitTests.Models
         [Fact]
         public void ValidNote_Ctor_SuccessfullyCreated()
         {
-            var sut = new Note(this.Note.Id, this.Note.Title, this.Note.Text, this.Note.CreatedOn,
+            var sut = new NoteEntity(this.Note.Id, this.Note.Title, this.Note.Text, this.Note.CreatedOn,
                 this.Note.ModifiedOn);
 
             Assert.Equal(this.Note.Id, sut.Id);
@@ -23,7 +22,7 @@ namespace Application.UnitTests.Models
         [Fact]
         public void InvalidId_Ctor_ThrowsArgumentOutOfRangeException()
         {
-            Assert.Throws<ArgumentOutOfRangeException>(() => new Note(-1, this.Note.Title, this.Note.Text,
+            Assert.Throws<ArgumentOutOfRangeException>(() => new NoteEntity(-1, this.Note.Title, this.Note.Text,
                 this.Note.CreatedOn,
                 this.Note.ModifiedOn));
         }
@@ -31,7 +30,7 @@ namespace Application.UnitTests.Models
         [Theory] [InlineData(null)] [InlineData("")]
         public void InvalidTitle_Ctor_ThrowsArgumentNullException(string title)
         {
-            Assert.Throws<ArgumentNullException>(() => new Note(this.Note.Id, title, this.Note.Text,
+            Assert.Throws<ArgumentNullException>(() => new NoteEntity(this.Note.Id, title, this.Note.Text,
                 this.Note.CreatedOn,
                 this.Note.ModifiedOn));
         }
