@@ -45,10 +45,5 @@ namespace Domain.Interfaces
         /// <returns>A <see cref="Result{T}"/> indicating whether operation was successful and <see cref="INote"/> that was returned.</returns>
         public new Task<Result<IReadOnlyCollection<INote>>> GetAsync(int pageNumber, int pageSize);
 
-        /// <summary>
-        /// Gets the notes count.
-        /// </summary>
-        /// <returns>The count of notes in the data store.</returns>
-        public ValueTask<Result<int>> GetCountAsync();
     }
 }
