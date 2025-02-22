@@ -1,6 +1,5 @@
-﻿using Application.Handlers;
-using Application.Requests;
-using Application.Tests;
+﻿using Application.Commands;
+using Application.Handlers;
 using Domain.Interfaces;
 using FluentResults;
 using NSubstitute;
@@ -16,13 +15,13 @@ namespace Application.UnitTests.Handler
         [Fact]
         public void NullMapper_Ctor_CtorSuccessful()
         {
-            Assert.Throws<ArgumentNullException>(() => new UpdateNoteHandler(this.NoteRepository, null));
+            Assert.Throws<ArgumentNullException>(() => new UpdateNoteCommandHandler(this.NoteRepository, null));
         }
 
         [Fact]
         public void NullRepository_Ctor_CtorSuccessful()
         {
-            Assert.Throws<ArgumentNullException>(() => new UpdateNoteHandler(null, this.Mapper));
+            Assert.Throws<ArgumentNullException>(() => new UpdateNoteCommandHandler(null, this.Mapper));
         }
 
         [Fact]
@@ -32,8 +31,8 @@ namespace Application.UnitTests.Handler
                 .UpdateAsync(Arg.Any<INote>())
                 .Returns(Result.Ok(this.Note));
 
-            var sut = await new UpdateNoteHandler(this.NoteRepository, this.Mapper).Handle(
-                new UpdateNoteRequest(this.NoteDto), CancellationToken.None);
+            var sut = await new UpdateNoteCommandHandler(this.NoteRepository, this.Mapper).Handle(
+                new UpdateNoteCommand(this.NoteDto), CancellationToken.None);
 
             Assert.True(sut.IsSuccess);
             Assert.Equal(this.NoteDto.Id, sut.ValueOrDefault.Id);

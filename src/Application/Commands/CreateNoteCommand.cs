@@ -2,12 +2,12 @@
 using FluentResults;
 using MediatR;
 
-namespace Application.Requests
+namespace Application.Commands
 {
     /// <summary>
     /// Request object for creating a note.
     /// </summary>
-    public class CreateNoteRequest : IRequest<Result<NoteDto>>
+    public class CreateNoteCommand : IRequest<Result<NoteDto>>
     {
         /// <summary>
         /// Gets the note to create.
@@ -15,10 +15,10 @@ namespace Application.Requests
         public NoteDto Note { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CreateNoteRequest"/> class.
+        /// Initializes a new instance of the <see cref="CreateNoteCommand"/> class.
         /// </summary>
         /// <param name="note">The note to create.</param>
-        public CreateNoteRequest(NoteDto note)
+        public CreateNoteCommand(NoteDto note)
         {
             this.Note = note;
         }

@@ -1,12 +1,12 @@
 ﻿using FluentResults;
 using MediatR;
 
-namespace Application.Requests
+namespace Application.Commands
 {
     /// <summary>
     /// Request object for deleting a note.
     /// </summary>
-    public class DeleteNoteRequest : IRequest<Result<int>>
+    public class DeleteNoteCommand : IRequest<Result<int>>
     {
         /// <summary>
         /// Gets the identifier.
@@ -14,10 +14,10 @@ namespace Application.Requests
         public int Id { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DeleteNoteRequest"/> class.
+        /// Initializes a new instance of the <see cref="DeleteNoteCommand"/> class.
         /// </summary>
         /// <param name="id">The note identifier.</param>
-        public DeleteNoteRequest(int id)
+        public DeleteNoteCommand(int id)
         {
             this.Id = id;
         }

@@ -1,4 +1,4 @@
-﻿using Application.Requests;
+﻿using Application.Querries;
 using FluentValidation;
 
 namespace Application.Validation
@@ -6,7 +6,7 @@ namespace Application.Validation
     /// <summary>
     /// Validator for getting paged notes.
     /// </summary>
-    public class GetNotesValidator : AbstractValidator<GetNotesRequest>
+    public class GetNotesValidator : AbstractValidator<GetNotesQuery>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="GetNotesValidator"/> class.

@@ -1,6 +1,5 @@
-﻿using Application.Handlers;
-using Application.Requests;
-using Application.Tests;
+﻿using Application.Commands;
+using Application.Handlers;
 using FluentResults;
 using NSubstitute;
 using System;
@@ -15,7 +14,7 @@ namespace Application.UnitTests.Handler
         [Fact]
         public void NullRepository_Ctor_CtorSuccessful()
         {
-            Assert.Throws<ArgumentNullException>(() => new DeleteNoteHandler(null));
+            Assert.Throws<ArgumentNullException>(() => new DeleteNoteCommandHandler(null));
         }
 
         [Fact]
@@ -25,8 +24,8 @@ namespace Application.UnitTests.Handler
                 .DeleteAsync(Arg.Any<int>())
                 .Returns(Result.Ok(this.Note.Id));
 
-            var sut = await new DeleteNoteHandler(this.NoteRepository).Handle(
-                new DeleteNoteRequest(this.Note.Id), CancellationToken.None);
+            var sut = await new DeleteNoteCommandHandler(this.NoteRepository).Handle(
+                new DeleteNoteCommand(this.Note.Id), CancellationToken.None);
 
             Assert.True(sut.IsSuccess);
             Assert.Equal(this.Note.Id, sut.ValueOrDefault);

@@ -1,6 +1,4 @@
-﻿using Application.DTOs;
-using Application.Requests;
-using AutoMapper;
+﻿using Application.Commands;
 using Domain.Interfaces;
 using FluentResults;
 using MediatR;
@@ -11,33 +9,26 @@ using System.Threading.Tasks;
 namespace Application.Handlers
 {
     /// <summary>
-    /// Handler for getting note.
+    /// Handler for deleting a note.
     /// </summary>
-    public class GetNoteHandler : IRequestHandler<GetNoteRequest, Result<NoteDto>>
+    public class DeleteNoteCommandHandler : IRequestHandler<DeleteNoteCommand, Result<int>>
     {
         private readonly INoteRepository _noteRepository;
-        private readonly IMapper _mapper;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="GetNoteHandler"/> class.
+        /// Initializes a new instance of the <see cref="DeleteNoteCommandHandler"/> class.
         /// </summary>
         /// <param name="noteRepository">An instance of <see cref="INoteRepository"/> to interact with the notes.</param>
-        /// <param name="mapper">The mapper.</param>
         /// <exception cref="ArgumentNullException">noteRepository</exception>
-        public GetNoteHandler(INoteRepository noteRepository, IMapper mapper)
+        public DeleteNoteCommandHandler(INoteRepository noteRepository)
         {
             _noteRepository = noteRepository ?? throw new ArgumentNullException(nameof(noteRepository));
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         /// <summary>Handles a request</summary>
         /// <param name="request">The request</param>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Response from the request</returns>
-        public async Task<Result<NoteDto>> Handle(GetNoteRequest request, CancellationToken cancellationToken)
-        {
-            var result = await _noteRepository.GetAsync(request.Id);
-            return result.ToResult(_ => _mapper.Map<NoteDto>(result.ValueOrDefault));
-        }
+        public async Task<Result<int>> Handle(DeleteNoteCommand request, CancellationToken cancellationToken) => await _noteRepository.DeleteAsync(request.Id);
     }
 }

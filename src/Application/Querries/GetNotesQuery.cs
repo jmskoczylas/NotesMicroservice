@@ -3,12 +3,12 @@ using FluentResults;
 using MediatR;
 using System.Collections.Generic;
 
-namespace Application.Requests
+namespace Application.Querries
 {
     /// <summary>
     /// Request object for getting paged notes.
     /// </summary>
-    public class GetNotesRequest : IRequest<Result<IReadOnlyCollection<NoteDto>>>
+    public class GetNotesQuery : IRequest<Result<IReadOnlyCollection<NoteDto>>>
     {
         /// <summary>
         /// Gets the page.
@@ -21,14 +21,14 @@ namespace Application.Requests
         public int PageSize { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="GetNotesRequest"/> class.
+        /// Initializes a new instance of the <see cref="GetNotesQuery"/> class.
         /// </summary>
         /// <param name="page">The page.</param>
         /// <param name="pageSize">Size of the page.</param>
-        public GetNotesRequest(int page, int pageSize)
+        public GetNotesQuery(int page, int pageSize)
         {
-            this.Page = page;
-            this.PageSize = pageSize;
+            Page = page;
+            PageSize = pageSize;
         }
     }
 }

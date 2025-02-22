@@ -1,5 +1,5 @@
 ﻿using Application.DTOs;
-using Application.Requests;
+using Application.Commands;
 using AutoMapper;
 using Domain.Interfaces;
 using FluentResults;
@@ -13,18 +13,18 @@ namespace Application.Handlers
     /// <summary>
     /// Handler for creating a note.
     /// </summary>
-    public class CreateNoteHandler : IRequestHandler<CreateNoteRequest, Result<NoteDto>>
+    public class CreateNoteCommandHandler : IRequestHandler<CreateNoteCommand, Result<NoteDto>>
     {
         private readonly INoteRepository _noteRepository;
         private readonly IMapper _mapper;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DeleteNoteHandler"/> class.
+        /// Initializes a new instance of the <see cref="DeleteNoteCommandHandler"/> class.
         /// </summary>
         /// <param name="noteRepository">An instance of <see cref="INoteRepository"/> used to perform operations on notes micro service.</param>
         /// <param name="mapper">The mapper.</param>
         /// <exception cref="ArgumentNullException">noteRepository</exception>
-        public CreateNoteHandler(INoteRepository noteRepository, IMapper mapper)
+        public CreateNoteCommandHandler(INoteRepository noteRepository, IMapper mapper)
         {
             _noteRepository = noteRepository ?? throw new ArgumentNullException(nameof(noteRepository));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -34,7 +34,7 @@ namespace Application.Handlers
         /// <param name="request">The request</param>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Response from the request</returns>
-        public async Task<Result<NoteDto>> Handle(CreateNoteRequest request, CancellationToken cancellationToken)
+        public async Task<Result<NoteDto>> Handle(CreateNoteCommand request, CancellationToken cancellationToken)
         {
             var note = _mapper.Map<INote>(request.Note);
             var result = await _noteRepository.CreateAsync(note);

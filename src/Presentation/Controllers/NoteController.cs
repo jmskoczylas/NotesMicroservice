@@ -1,5 +1,6 @@
-﻿using Application.DTOs;
-using Application.Requests;
+﻿using Application.Commands;
+using Application.DTOs;
+using Application.Querries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -47,7 +48,7 @@ namespace NotesMicroservice.WebApi.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] NoteDto noteDto)
         {
-            var result = await _mediator.Send(new CreateNoteRequest(noteDto));
+            var result = await _mediator.Send(new CreateNoteCommand(noteDto));
             return result.IsFailed ? this.BadRequest(result.ToResult()) : this.Created(result.Value.Id.ToString(), result.ValueOrDefault);
         }
 
@@ -65,7 +66,7 @@ namespace NotesMicroservice.WebApi.Controllers
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var result = await _mediator.Send(new DeleteNoteRequest(id));
+            var result = await _mediator.Send(new DeleteNoteCommand(id));
             return result.IsSuccess ? this.NoContent() : this.BadRequest();
         }
 
@@ -85,7 +86,7 @@ namespace NotesMicroservice.WebApi.Controllers
         [HttpGet("{id:int}")]
         public async Task<IActionResult> Get(int id)
         {
-            var result = await _mediator.Send(new GetNoteRequest(id));
+            var result = await _mediator.Send(new GetNoteQuery(id));
             if (result == null) return new NotFoundResult();
             return this.Ok(result.ValueOrDefault);
         }
@@ -104,7 +105,7 @@ namespace NotesMicroservice.WebApi.Controllers
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] int pageSize, [FromQuery] int page)
         {
-            var result = await _mediator.Send(new GetNotesRequest(page, pageSize));
+            var result = await _mediator.Send(new GetNotesQuery(page, pageSize));
             return result.IsFailed ? this.BadRequest() : this.Ok(result.ValueOrDefault);
         }
 
@@ -124,7 +125,7 @@ namespace NotesMicroservice.WebApi.Controllers
         [HttpPut]
         public async Task<IActionResult> Update([FromBody] NoteDto noteDto)
         {
-            var result = await _mediator.Send(new UpdateNoteRequest(noteDto));
+            var result = await _mediator.Send(new UpdateNoteCommand(noteDto));
             return result.IsSuccess ? this.Ok(result.ValueOrDefault) : this.BadRequest();
         }
     }

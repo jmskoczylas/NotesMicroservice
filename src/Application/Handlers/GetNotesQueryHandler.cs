@@ -1,5 +1,5 @@
 ﻿using Application.DTOs;
-using Application.Requests;
+using Application.Querries;
 using AutoMapper;
 using Domain.Interfaces;
 using FluentResults;
@@ -15,18 +15,18 @@ namespace Application.Handlers
     /// <summary>
     /// Handler for getting paged notes.
     /// </summary>
-    public class GetNotesHandler : IRequestHandler<GetNotesRequest, Result<IReadOnlyCollection<NoteDto>>>
+    public class GetNotesQueryHandler : IRequestHandler<GetNotesQuery, Result<IReadOnlyCollection<NoteDto>>>
     {
         private readonly INoteRepository _noteRepository;
         private readonly IMapper _mapper;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="GetNotesHandler"/> class.
+        /// Initializes a new instance of the <see cref="GetNotesQueryHandler"/> class.
         /// </summary>
         /// <param name="noteRepository">An instance of <see cref="INoteRepository"/> to interact with the notes.</param>
         /// <param name="mapper">The mapper.</param>
         /// <exception cref="ArgumentNullException">noteRepository</exception>
-        public GetNotesHandler(INoteRepository noteRepository, IMapper mapper)
+        public GetNotesQueryHandler(INoteRepository noteRepository, IMapper mapper)
         {
             _noteRepository = noteRepository ?? throw new ArgumentNullException(nameof(noteRepository));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -36,7 +36,7 @@ namespace Application.Handlers
         /// <param name="request">The request</param>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Response from the request</returns>
-        public async Task<Result<IReadOnlyCollection<NoteDto>>> Handle(GetNotesRequest request, CancellationToken cancellationToken)
+        public async Task<Result<IReadOnlyCollection<NoteDto>>> Handle(GetNotesQuery request, CancellationToken cancellationToken)
         {
             if (request.Page == 0)
             {

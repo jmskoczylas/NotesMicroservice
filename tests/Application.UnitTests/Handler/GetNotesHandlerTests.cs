@@ -1,5 +1,5 @@
 ﻿using Application.Handlers;
-using Application.Requests;
+using Application.Querries;
 using Domain.Interfaces;
 using FluentResults;
 using Infrastructure.Models;
@@ -18,13 +18,13 @@ namespace Application.UnitTests.Handler
         [Fact]
         public void NullMapper_Ctor_CtorSuccessful()
         {
-            Assert.Throws<ArgumentNullException>(() => new GetNotesHandler(this.NoteRepository, null));
+            Assert.Throws<ArgumentNullException>(() => new GetNotesQueryHandler(this.NoteRepository, null));
         }
 
         [Fact]
         public void NullRepository_Ctor_CtorSuccessful()
         {
-            Assert.Throws<ArgumentNullException>(() => new GetNotesHandler(null, this.Mapper));
+            Assert.Throws<ArgumentNullException>(() => new GetNotesQueryHandler(null, this.Mapper));
         }
 
         [Fact]
@@ -46,8 +46,8 @@ namespace Application.UnitTests.Handler
                 .GetAsync(Arg.Any<int>(), Arg.Any<int>())
                 .Returns(Result.Ok(page2));
 
-            var sut = await new GetNotesHandler(this.NoteRepository, this.Mapper).Handle(
-                new GetNotesRequest(2, 3), CancellationToken.None);
+            var sut = await new GetNotesQueryHandler(this.NoteRepository, this.Mapper).Handle(
+                new GetNotesQuery(2, 3), CancellationToken.None);
 
             Assert.True(sut.IsSuccess);
             Assert.Equal(3, sut.ValueOrDefault.Count);

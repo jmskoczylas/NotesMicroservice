@@ -1,4 +1,6 @@
-﻿using Application.Requests;
+﻿using Application.DTOs;
+using Application.Querries;
+using AutoMapper;
 using Domain.Interfaces;
 using FluentResults;
 using MediatR;
@@ -9,26 +11,33 @@ using System.Threading.Tasks;
 namespace Application.Handlers
 {
     /// <summary>
-    /// Handler for deleting a note.
+    /// Handler for getting note.
     /// </summary>
-    public class DeleteNoteHandler : IRequestHandler<DeleteNoteRequest, Result<int>>
+    public class GetNoteQueryHandler : IRequestHandler<GetNoteQuery, Result<NoteDto>>
     {
         private readonly INoteRepository _noteRepository;
+        private readonly IMapper _mapper;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DeleteNoteHandler"/> class.
+        /// Initializes a new instance of the <see cref="GetNoteQueryHandler"/> class.
         /// </summary>
         /// <param name="noteRepository">An instance of <see cref="INoteRepository"/> to interact with the notes.</param>
+        /// <param name="mapper">The mapper.</param>
         /// <exception cref="ArgumentNullException">noteRepository</exception>
-        public DeleteNoteHandler(INoteRepository noteRepository)
+        public GetNoteQueryHandler(INoteRepository noteRepository, IMapper mapper)
         {
             _noteRepository = noteRepository ?? throw new ArgumentNullException(nameof(noteRepository));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         /// <summary>Handles a request</summary>
         /// <param name="request">The request</param>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Response from the request</returns>
-        public async Task<Result<int>> Handle(DeleteNoteRequest request, CancellationToken cancellationToken) => await _noteRepository.DeleteAsync(request.Id);
+        public async Task<Result<NoteDto>> Handle(GetNoteQuery request, CancellationToken cancellationToken)
+        {
+            var result = await _noteRepository.GetAsync(request.Id);
+            return result.ToResult(_ => _mapper.Map<NoteDto>(result.ValueOrDefault));
+        }
     }
 }

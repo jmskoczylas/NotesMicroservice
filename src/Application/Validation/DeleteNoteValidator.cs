@@ -1,4 +1,4 @@
-﻿using Application.Requests;
+﻿using Application.Commands;
 using FluentValidation;
 
 namespace Application.Validation
@@ -6,7 +6,7 @@ namespace Application.Validation
     /// <summary>
     /// Validator for deleting a note.
     /// </summary>
-    public class DeleteNoteValidator : AbstractValidator<DeleteNoteRequest>
+    public class DeleteNoteValidator : AbstractValidator<DeleteNoteCommand>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="DeleteNoteValidator"/> class.

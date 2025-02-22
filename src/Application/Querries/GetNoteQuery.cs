@@ -2,12 +2,12 @@
 using FluentResults;
 using MediatR;
 
-namespace Application.Requests
+namespace Application.Querries
 {
     /// <summary>
     /// Request object for getting a note.
     /// </summary>
-    public class GetNoteRequest : IRequest<Result<NoteDto>>
+    public class GetNoteQuery : IRequest<Result<NoteDto>>
     {
         /// <summary>
         /// Gets the identifier.
@@ -15,12 +15,12 @@ namespace Application.Requests
         public int Id { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:System.Object" /> class.
+        /// Initializes a new instance of the <see cref="GetNoteQuery" /> class.
         /// </summary>
         /// <param name="id">The identifier.</param>
-        public GetNoteRequest(int id)
+        public GetNoteQuery(int id)
         {
-            this.Id = id;
+            Id = id;
         }
     }
 }
