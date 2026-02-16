@@ -55,10 +55,11 @@ namespace Application.Behaviors
             CancellationToken cancellationToken,
             RequestHandlerDelegate<TResponse> next)
         {
-            if (!(request is IRequest<ResultBase>) || !this._validators.Any())
+            if (request is not IRequest<ResultBase> || !this._validators.Any())
             {
                 return await next();
             }
+            
             var context = new ValidationContext(request);
             var validationResults = await Task.WhenAll(
                 this._validators.Select(v => v.ValidateAsync(context, cancellationToken))

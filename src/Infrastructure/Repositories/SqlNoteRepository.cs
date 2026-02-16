@@ -21,6 +21,7 @@ namespace Infrastructure.Repositories
     {
         private readonly IMapper _mapper;
         private readonly ILogger<SqlNoteRepository> _logger;
+        private readonly string _connectionString;
         private static readonly ActivitySource ActivitySource = new ActivitySource(nameof(SqlNoteRepository));
 
         /// <summary>
@@ -28,12 +29,15 @@ namespace Infrastructure.Repositories
         /// </summary>
         /// <param name="mapper">The mapper.</param>
         /// <param name="logger">An instance of <see cref="ILogger{TCategoryName}"/>.</param>
-        /// <exception cref="ArgumentNullException">customerDatabaseConnectionFactory</exception>
+        /// <param name="connectionString">Database connection string.</param>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="mapper"/>, <paramref name="logger"/>, or <paramref name="connectionString"/> is <see langword="null"/>.</exception>
         public SqlNoteRepository(IMapper mapper,
-            ILogger<SqlNoteRepository> logger)
+            ILogger<SqlNoteRepository> logger,
+            string connectionString)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
         }
 
         /// <inheritdoc cref="INoteRepository" />
@@ -292,7 +296,7 @@ namespace Infrastructure.Repositories
         private IDbConnection GetConnection()
         {
             using var activity = ActivitySource.StartActivity($"{nameof(SqlNoteRepository)}.{nameof(GetConnection)}");
-            return new SqlConnection("Data Source=localhost;Initial Catalog=DefaultDb;Integrated Security=True");
+            return new SqlConnection(_connectionString);
         }
     }
 }

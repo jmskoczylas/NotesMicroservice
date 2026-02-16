@@ -9,7 +9,7 @@ namespace Domain.Entities
     public abstract class Note : INote
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Note"/> class.
+        /// 
         /// </summary>
         /// <param name="id">The Id of the note.</param>
         /// <param name="title">The title of the note.</param>

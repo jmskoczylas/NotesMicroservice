@@ -3,22 +3,22 @@
 namespace Infrastructure.Tracing
 {
     /// <summary>
-    /// An extension class for open telemetry..
+    /// Extension methods for adding custom tracing metadata to <see cref="Activity"/> instances.
     /// </summary>
     public static class ActivityExtensions
     {
         /// <summary>
-        /// Sets the the custom property indicating success.
+        /// Sets a custom property indicating whether an operation succeeded.
         /// </summary>
         /// <param name="activity">The activity.</param>
-        /// <param name="success">if set to <c>true</c> [success].</param>
+        /// <param name="success"><see langword="true"/> when the operation succeeded; otherwise, <see langword="false"/>.</param>
         public static void SetIsSuccess(this Activity activity, bool success)
         {
             activity?.SetCustomProperty("operationSuccessful", success);
         }
 
         /// <summary>
-        /// Sets the the custom record count property.
+        /// Sets a custom property with the number of records processed.
         /// </summary>
         /// <param name="activity">The activity.</param>
         /// <param name="count">The record count.</param>

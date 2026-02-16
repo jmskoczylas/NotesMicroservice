@@ -20,7 +20,7 @@ namespace Application.Handlers
         private readonly IMapper _mapper;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DeleteNoteHandler"/> class.
+        /// Initializes a new instance of the <see cref="CreateNoteHandler"/> class.
         /// </summary>
         /// <param name="noteRepository">An instance of <see cref="INoteRepository"/> used to perform operations on notes micro service.</param>
         /// <param name="mapper">The mapper.</param>

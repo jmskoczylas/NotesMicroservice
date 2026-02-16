@@ -21,13 +21,7 @@ namespace Application.Controllers
         /// Initializes a new instance of the <see cref="NoteController"/> class.
         /// </summary>
         /// <param name="mediator">The mediator used to initialize individual API endpoints.</param>
-        /// <exception cref="ArgumentNullException">
-        /// noteManager
-        /// or
-        /// mapper
-        /// or
-        /// identityProvider
-        /// </exception>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="mediator"/> is <see langword="null"/>.</exception>
         public NoteController(IMediator mediator) 
         {
             this._mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));

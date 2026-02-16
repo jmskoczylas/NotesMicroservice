@@ -15,7 +15,7 @@ namespace Application.Requests
         public int Id { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:System.Object" /> class.
+        /// Initializes a new instance of the <see cref="GetNoteRequest"/> class.
         /// </summary>
         /// <param name="id">The identifier.</param>
         public GetNoteRequest(int id)

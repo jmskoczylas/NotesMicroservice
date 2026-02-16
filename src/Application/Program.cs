@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using System;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using System.IO;
-using System.Reflection;
 
 namespace Application
 {
@@ -12,7 +11,7 @@ namespace Application
     public static class Program
     {
         /// <summary>
-        /// 
+        /// Application entry point.
         /// </summary>
         public static void Main()
         {
@@ -20,22 +19,21 @@ namespace Application
         }
 
         /// <summary>
-        /// 
+        /// Creates and configures the host builder for the web application.
         /// </summary>
-        /// <returns></returns>
-        public static IHostBuilder CreateHostBuilder()
+        /// <returns>A configured <see cref="IHostBuilder"/> instance.</returns>
+        private static IHostBuilder CreateHostBuilder()
         {
-            var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var configuration = new ConfigurationBuilder()
-                .AddEnvironmentVariables()
-                .AddJsonFile($"{path}{"\\configs\\appsettings.json"}")
-                .Build();
-
             return Host.CreateDefaultBuilder()
-                .ConfigureAppConfiguration(builder =>
+                .ConfigureAppConfiguration((hostingContext, builder) =>
                 {
                     builder.Sources.Clear();
-                    builder.AddConfiguration(configuration);
+                    var environment = hostingContext.HostingEnvironment.EnvironmentName;
+
+                    builder.SetBasePath(AppContext.BaseDirectory);
+                    builder.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+                    builder.AddJsonFile($"appsettings.{environment}.json", optional: true, reloadOnChange: true);
+                    builder.AddEnvironmentVariables();
                 })
                 .ConfigureWebHostDefaults(webHostBuilder => { webHostBuilder.UseStartup<Startup>(); })
                 .ConfigureLogging(logging =>
