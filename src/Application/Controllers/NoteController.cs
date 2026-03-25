@@ -41,7 +41,7 @@ namespace Application.Controllers
         [ProducesResponseType(typeof(int), 401)]
         [ProducesResponseType(typeof(int),400)]
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] NoteDto noteDto)
+        public async Task<IActionResult> Create([FromBody] CreateNoteDto noteDto)
         {
             var result = await _mediator.Send(new CreateNoteRequest(noteDto));
             return result.IsFailed ? this.BadRequest(result.ToResult()) : this.Created(result.Value.Id.ToString(), result.ValueOrDefault);
@@ -118,7 +118,7 @@ namespace Application.Controllers
         [ProducesResponseType(typeof(int), 401)]
         [ProducesResponseType(typeof(int), 400)]
         [HttpPut]
-        public async Task<IActionResult> Update([FromBody] NoteDto noteDto)
+        public async Task<IActionResult> Update([FromBody] UpdateNoteDto noteDto)
         {
             var result = await _mediator.Send(new UpdateNoteRequest(noteDto));
             return result.IsSuccess ? this.Ok(result.ValueOrDefault) : this.BadRequest();

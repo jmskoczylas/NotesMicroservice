@@ -1,0 +1,14 @@
+CREATE TABLE dbo.notes
+(
+    Id INT IDENTITY(1,1) NOT NULL CONSTRAINT PK_notes PRIMARY KEY,
+    Title NVARCHAR(200) NOT NULL,
+    [Text] NVARCHAR(MAX) NULL,
+    CreatedOn DATETIME2 NOT NULL CONSTRAINT DF_notes_CreatedOn DEFAULT SYSUTCDATETIME(),
+    ModifiedOn DATETIME2 NULL,
+    NoteVersion INT NOT NULL CONSTRAINT DF_notes_NoteVersion DEFAULT 1,
+    DeletedOn DATETIME2 NULL
+);
+
+CREATE INDEX IX_notes_Active_Id
+    ON dbo.notes (Id)
+    WHERE DeletedOn IS NULL;

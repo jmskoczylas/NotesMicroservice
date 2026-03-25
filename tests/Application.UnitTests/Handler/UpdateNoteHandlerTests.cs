@@ -33,12 +33,12 @@ namespace Application.UnitTests.Handler
                 .Returns(Result.Ok(this.Note));
 
             var sut = await new UpdateNoteHandler(this.NoteRepository, this.Mapper).Handle(
-                new UpdateNoteRequest(this.NoteDto), CancellationToken.None);
+                new UpdateNoteRequest(this.UpdateNoteDto), CancellationToken.None);
 
             Assert.True(sut.IsSuccess);
-            Assert.Equal(this.NoteDto.Id, sut.ValueOrDefault.Id);
-            Assert.Equal(this.NoteDto.Title, sut.ValueOrDefault.Title);
-            Assert.Equal(this.NoteDto.Text, sut.ValueOrDefault.Text);
+            Assert.Equal(this.UpdateNoteDto.Id, sut.ValueOrDefault.Id);
+            Assert.Equal(this.UpdateNoteDto.Title, sut.ValueOrDefault.Title);
+            Assert.Equal(this.UpdateNoteDto.Text, sut.ValueOrDefault.Text);
             Assert.Equal(this.NoteDto.ModifiedOn, sut.ValueOrDefault.ModifiedOn);
             Assert.Equal(this.NoteDto.CreatedOn, sut.ValueOrDefault.CreatedOn);
         }

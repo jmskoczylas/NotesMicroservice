@@ -19,7 +19,8 @@ namespace Infrastructure.Mappings
             ShouldMapMethod = _ => false;
 
             CreateMap<INote, NoteDto>().ConvertUsing<NoteToNoteDtoConverter>();
-            CreateMap<NoteDto, INote>().ConvertUsing<NoteDtoToNoteConverter>();
+            CreateMap<CreateNoteDto, INote>().ConvertUsing<CreateNoteDtoToNoteConverter>();
+            CreateMap<UpdateNoteDto, INote>().ConvertUsing<UpdateNoteDtoToNoteConverter>();
             CreateMap<NoteRepositoryDto, INote>()
                 .ConstructUsing(x => new Note(x.Id, x.Title, x.Text, x.CreatedOn, x.ModifiedOn, x.NoteVersion, x.DeletedOn));
         }

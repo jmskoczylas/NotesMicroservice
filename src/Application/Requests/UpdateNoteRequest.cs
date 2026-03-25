@@ -12,13 +12,13 @@ namespace Application.Requests
         /// <summary>
         /// Gets the note to update.
         /// </summary>
-        public NoteDto Note { get; }
+        public UpdateNoteDto Note { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UpdateNoteRequest"/> class.
         /// </summary>
         /// <param name="note">The note to update.</param>
-        public UpdateNoteRequest(NoteDto note)
+        public UpdateNoteRequest(UpdateNoteDto note)
         {
             this.Note = note;
         }

@@ -32,7 +32,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"id\": 0,\n  \"title\": \"First note\",\n  \"text\": \"Created from Postman.\",\n  \"createdOn\": null,\n  \"modifiedOn\": null,\n  \"noteVersion\": 0,\n  \"deletedOn\": null\n}"
+          "raw": "{\n  \"title\": \"First note\",\n  \"text\": \"Created from Postman.\"\n}"
         },
         "url": {
           "raw": "{{baseUrl}}/api/Note",
@@ -134,7 +134,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"id\": {{noteId}},\n  \"title\": \"First note updated\",\n  \"text\": \"Updated from Postman.\",\n  \"createdOn\": null,\n  \"modifiedOn\": null,\n  \"noteVersion\": {{noteVersion}},\n  \"deletedOn\": null\n}"
+          "raw": "{\n  \"id\": {{noteId}},\n  \"title\": \"First note updated\",\n  \"text\": \"Updated from Postman.\",\n  \"noteVersion\": {{noteVersion}}\n}"
         },
         "url": {
           "raw": "{{baseUrl}}/api/Note",

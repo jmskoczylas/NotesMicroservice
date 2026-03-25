@@ -14,7 +14,9 @@ namespace Application.UnitTests
         public NoteRepositoryDto NoteRepositoryDto { get; }
         public IMapper Mapper { get; }
         public INote Note { get; }
+        public CreateNoteDto CreateNoteDto { get; }
         public NoteDto NoteDto { get; }
+        public UpdateNoteDto UpdateNoteDto { get; }
 
         public Fixture()
         {
@@ -31,6 +33,20 @@ namespace Application.UnitTests
                 NoteVersion = Note.NoteVersion,
                 DeletedOn = Note.DeletedOn,
                 Text = Note.Text
+            };
+
+            CreateNoteDto = new CreateNoteDto()
+            {
+                Title = Note.Title,
+                Text = Note.Text
+            };
+
+            UpdateNoteDto = new UpdateNoteDto()
+            {
+                Id = Note.Id,
+                Title = Note.Title,
+                Text = Note.Text,
+                NoteVersion = Note.NoteVersion
             };
 
             NoteRepositoryDto = new NoteRepositoryDto()
