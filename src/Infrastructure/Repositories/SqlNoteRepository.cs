@@ -222,12 +222,13 @@ namespace Infrastructure.Repositories
 
             var connection = this.GetConnection();
             var result = await connection.QueryAsync<NoteRepositoryDto>(getPagedNotesSql, parameters);
-            if (result == null || !result.Any())
+            if (result == null)
             {
-                if (!_logger.IsEnabled(LogLevel.Warning)) return null;
-                
                 activity?.SetCustomProperty("result", "failed");
-                _logger.LogWarning("Failed to get notes.");
+                if (_logger.IsEnabled(LogLevel.Warning))
+                {
+                    _logger.LogWarning("Failed to get notes.");
+                }
 
                 return Result.Fail(new Error("Failed to get notes."));
             }
