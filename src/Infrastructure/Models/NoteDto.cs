@@ -34,5 +34,15 @@ namespace Infrastructure.Models
         /// Gets the date and time the entity was last modified.
         /// </summary>
         public DateTime? ModifiedOn { get; set; }
+
+        /// <summary>
+        /// Gets or sets the optimistic concurrency version.
+        /// </summary>
+        public int NoteVersion { get; set; }
+
+        /// <summary>
+        /// Gets or sets the soft-delete timestamp.
+        /// </summary>
+        public DateTime? DeletedOn { get; set; }
     }
 }

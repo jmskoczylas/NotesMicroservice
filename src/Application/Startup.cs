@@ -52,6 +52,7 @@ namespace Application
             {
                 var mapper = serviceProvider.GetRequiredService<AutoMapper.IMapper>();
                 var logger = serviceProvider.GetRequiredService<ILogger<SqlNoteRepository>>();
+                var provider = Configuration["Db:Provider"] ?? "SqlServer";
                 var connectionString = Configuration.GetConnectionString("Default")
                     ?? Configuration.GetConnectionString("SqlConnectionString");
 
@@ -60,7 +61,13 @@ namespace Application
                     throw new InvalidOperationException("Missing connection string. Configure ConnectionStrings:Default or ConnectionStrings:SqlConnectionString.");
                 }
 
-                return new SqlNoteRepository(mapper, logger, connectionString);
+                if (!string.Equals(provider, "SqlServer", StringComparison.OrdinalIgnoreCase)
+                    && !string.Equals(provider, "Sqlite", StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new InvalidOperationException("Unsupported Db:Provider. Use SqlServer or Sqlite.");
+                }
+
+                return new SqlNoteRepository(mapper, logger, connectionString, provider);
             });
             services.AddMediatR(Assembly.GetExecutingAssembly());
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());

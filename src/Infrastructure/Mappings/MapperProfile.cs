@@ -1,6 +1,6 @@
-﻿using Application.Mappings.Converters;
-using AutoMapper;
+﻿using AutoMapper;
 using Domain.Interfaces;
+using Infrastructure.Mappings.Converters;
 using Infrastructure.Models;
 
 namespace Infrastructure.Mappings
@@ -16,9 +16,12 @@ namespace Infrastructure.Mappings
         /// </summary>
         public MapperProfile()
         {
-            this.CreateMap<INote, NoteDto>().ConvertUsing<NoteToNoteDtoConverter>();
-            this.CreateMap<NoteDto, INote>().ConvertUsing<NoteDtoToNoteConverter>();
-            this.CreateMap<NoteRepositoryDto, INote>().ConstructUsing(x => new Note(x.Id, x.Title, x.Text, x.CreatedOn, x.ModifiedOn));
+            ShouldMapMethod = _ => false;
+
+            CreateMap<INote, NoteDto>().ConvertUsing<NoteToNoteDtoConverter>();
+            CreateMap<NoteDto, INote>().ConvertUsing<NoteDtoToNoteConverter>();
+            CreateMap<NoteRepositoryDto, INote>()
+                .ConstructUsing(x => new Note(x.Id, x.Title, x.Text, x.CreatedOn, x.ModifiedOn, x.NoteVersion, x.DeletedOn));
         }
     }
 }

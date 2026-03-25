@@ -6,7 +6,8 @@ namespace Infrastructure.Models
     public class Note : Domain.Entities.Note
     {
         /// <inheritdoc />
-        public Note(int id, string title, string notes, DateTime? createdOn, DateTime? modifiedOn) : base(id, title, notes, createdOn, modifiedOn)
+        public Note(int id, string title, string notes, DateTime? createdOn, DateTime? modifiedOn, int noteVersion, DateTime? deletedOn)
+            : base(id, title, notes, createdOn, modifiedOn, noteVersion, deletedOn)
         {
         }
     }

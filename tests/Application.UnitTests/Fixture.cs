@@ -1,10 +1,10 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using Domain.Interfaces;
 using Infrastructure.Interfaces;
 using Infrastructure.Mappings;
 using Infrastructure.Models;
 using NSubstitute;
-using System;
 
 namespace Application.UnitTests
 {
@@ -18,34 +18,39 @@ namespace Application.UnitTests
 
         public Fixture()
         {
-            this.NoteRepository = Substitute.For<INoteRepository>();
-            this.Note = new Note(474, "name", "the notes",
-                DateTime.UtcNow, DateTime.UtcNow);
+            NoteRepository = Substitute.For<INoteRepository>();
+            Note = new Note(474, "name", "the notes",
+                DateTime.UtcNow, DateTime.UtcNow, 1, null);
 
-            this.NoteDto = new NoteDto()
+            NoteDto = new NoteDto()
             {
-                Id = this.Note.Id,
-                Title = this.Note.Title,
-                ModifiedOn = this.Note.ModifiedOn,
-                CreatedOn = this.Note.CreatedOn,
-                Text = this.Note.Text
+                Id = Note.Id,
+                Title = Note.Title,
+                ModifiedOn = Note.ModifiedOn,
+                CreatedOn = Note.CreatedOn,
+                NoteVersion = Note.NoteVersion,
+                DeletedOn = Note.DeletedOn,
+                Text = Note.Text
             };
 
-            this.NoteRepositoryDto = new NoteRepositoryDto()
+            NoteRepositoryDto = new NoteRepositoryDto()
             {
-                Id = this.Note.Id,
-                Title = this.Note.Title,
-                Text = this.Note.Text,
-                CreatedOn = this.Note.CreatedOn,
-                ModifiedOn = this.Note.ModifiedOn,
+                Id = Note.Id,
+                Title = Note.Title,
+                Text = Note.Text,
+                CreatedOn = Note.CreatedOn,
+                ModifiedOn = Note.ModifiedOn,
+                NoteVersion = Note.NoteVersion,
+                DeletedOn = Note.DeletedOn
             };
 
             var mappingConfig = new MapperConfiguration(mc =>
             {
+                mc.ShouldMapMethod = _ => false;
                 mc.AddProfile(new MapperProfile());
             });
             var mapper = mappingConfig.CreateMapper();
-            this.Mapper = mapper;
+            Mapper = mapper;
         }
     }
 }

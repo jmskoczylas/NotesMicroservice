@@ -5,6 +5,7 @@ using FluentResults;
 using Infrastructure.Interfaces;
 using Infrastructure.Models;
 using Infrastructure.Tracing;
+using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,7 @@ namespace Infrastructure.Repositories
         private readonly IMapper _mapper;
         private readonly ILogger<SqlNoteRepository> _logger;
         private readonly string _connectionString;
+        private readonly bool _isSqlite;
         private static readonly ActivitySource ActivitySource = new ActivitySource(nameof(SqlNoteRepository));
 
         /// <summary>
@@ -30,14 +32,29 @@ namespace Infrastructure.Repositories
         /// <param name="mapper">The mapper.</param>
         /// <param name="logger">An instance of <see cref="ILogger{TCategoryName}"/>.</param>
         /// <param name="connectionString">Database connection string.</param>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="mapper"/>, <paramref name="logger"/>, or <paramref name="connectionString"/> is <see langword="null"/>.</exception>
+        /// <param name="dbProvider">Database provider name: SqlServer or Sqlite.</param>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="mapper"/>, <paramref name="logger"/>, <paramref name="connectionString"/>, or <paramref name="dbProvider"/> is <see langword="null"/>.</exception>
         public SqlNoteRepository(IMapper mapper,
             ILogger<SqlNoteRepository> logger,
-            string connectionString)
+            string connectionString,
+            string dbProvider)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
+
+            if (string.IsNullOrWhiteSpace(dbProvider))
+            {
+                throw new ArgumentNullException(nameof(dbProvider));
+            }
+
+            if (!string.Equals(dbProvider, "SqlServer", StringComparison.OrdinalIgnoreCase)
+                && !string.Equals(dbProvider, "Sqlite", StringComparison.OrdinalIgnoreCase))
+            {
+                throw new ArgumentOutOfRangeException(nameof(dbProvider), dbProvider, "Supported providers are SqlServer and Sqlite.");
+            }
+
+            _isSqlite = string.Equals(dbProvider, "Sqlite", StringComparison.OrdinalIgnoreCase);
         }
 
         /// <inheritdoc cref="INoteRepository" />
@@ -52,8 +69,7 @@ namespace Infrastructure.Repositories
         {
             using var activity = ActivitySource.StartActivity($"{nameof(SqlNoteRepository)}.{nameof(InternalCreateAsync)}");
 
-            const string createNoteSql =
-                "INSERT INTO notes (title, text, CreatedOn) values (@title, @text, @createdOn);SELECT Id, Title, Text, CreatedOn, ModifiedOn FROM notes WHERE Title = @title AND createdOn = @createdOn;";
+            var createNoteSql = GetCreateNoteSql();
             var parameters = new DynamicParameters();
             parameters.Add("@title", note.Title);
             parameters.Add("@text", note.Text);
@@ -71,7 +87,7 @@ namespace Infrastructure.Repositories
                     this._logger.LogWarning("Note {name} {id} could not be created", note.Title, note.Id);
                 }
 
-                Result.Fail(new Error("Create note failed because it could not be added to the database."));
+                return Result.Fail(new Error("Create note failed because it could not be added to the database."));
             }
 
             activity?.SetIsSuccess(true);
@@ -93,12 +109,13 @@ namespace Infrastructure.Repositories
 
             var modifiedOn = DateTime.UtcNow;
             const string updateSql =
-                "UPDATE notes SET title = @title, text = @text, ModifiedOn = @modifiedOn WHERE id = @id";
+                "UPDATE notes SET title = @title, [text] = @text, ModifiedOn = @modifiedOn, NoteVersion = NoteVersion + 1 WHERE id = @id AND DeletedOn IS NULL AND NoteVersion = @noteVersion";
             var parameters = new DynamicParameters();
             parameters.Add("@id", note.Id);
             parameters.Add("@title", note.Title);
             parameters.Add("@text", note.Text);
             parameters.Add("@modifiedOn", modifiedOn);
+            parameters.Add("@noteVersion", note.NoteVersion);
 
             var connection = this.GetConnection();
             var rowsAffected =
@@ -109,10 +126,10 @@ namespace Infrastructure.Repositories
                 activity?.SetIsSuccess(false);
                 if (_logger.IsEnabled(LogLevel.Warning))
                 {
-                    this._logger.LogWarning("Note {name} {id} could not be found.", note.Title, note.Id);
+                    this._logger.LogWarning("Note {name} {id} could not be updated due to missing row or version mismatch.", note.Title, note.Id);
                 }
 
-                return Result.Fail(new Error("Update note failed because it could not be added to the database"));
+                return Result.Fail(new Error("Update note failed due to missing row, deleted row, or version conflict."));
             }
 
             activity?.SetIsSuccess(true);
@@ -140,9 +157,11 @@ namespace Infrastructure.Repositories
         {
             using var activity = ActivitySource.StartActivity($"{nameof(SqlNoteRepository)}.{nameof(InternalDeleteAsync)}");
 
-            const string updatenoteSql = "DELETE FROM notes where id = @id";
+            const string updatenoteSql =
+                "UPDATE notes SET DeletedOn = @deletedOn, ModifiedOn = @deletedOn, NoteVersion = NoteVersion + 1 WHERE id = @id AND DeletedOn IS NULL";
             var parameters = new DynamicParameters();
             parameters.Add("@id", id);
+            parameters.Add("@deletedOn", DateTime.UtcNow);
 
             var connection = this.GetConnection();
 
@@ -151,11 +170,11 @@ namespace Infrastructure.Repositories
             {
                 rowsAffected = await connection.ExecuteAsync(updatenoteSql, parameters);
             }
-            catch (SqlException sqlException)
+            catch (Exception exception)
             {
                 if (_logger.IsEnabled(LogLevel.Warning))
                 {
-                    _logger.LogWarning("Failed to delete a note {id}. Sql exception {message}, {stackTrace}.", id, sqlException.Message, sqlException.StackTrace);
+                    _logger.LogWarning("Failed to soft-delete note {id}. Exception {message}, {stackTrace}.", id, exception.Message, exception.StackTrace);
                 }
 
                 activity?.SetIsSuccess(false);
@@ -183,7 +202,7 @@ namespace Infrastructure.Repositories
         /// <inheritdoc cref="INoteRepository" />
         public Task<Result<IReadOnlyCollection<INote>>> GetAsync(int pageNumber, int pageSize)
         {
-            if (pageNumber < 0) throw new ArgumentOutOfRangeException(nameof(pageNumber));
+            if (pageNumber <= 0) throw new ArgumentOutOfRangeException(nameof(pageNumber));
             if (pageSize <= 0) throw new ArgumentOutOfRangeException(nameof(pageSize));
 
             return this.InternalGetAsync(pageNumber, pageSize);
@@ -195,18 +214,13 @@ namespace Infrastructure.Repositories
             activity?.SetCustomProperty("pageNumber", pageNumber);
             activity?.SetCustomProperty("pageSize", pageSize);
 
-            const string getCountSql =
-                "SELECT count(Id) FROM notes";
-            var connection = this.GetConnection();
-            var notesCount = await connection.QueryFirstOrDefaultAsync<int>(getCountSql);
-
             var parameters = new DynamicParameters();
-            parameters.Add("@rowsCount", notesCount);
             parameters.Add("@pageNumber", pageNumber);
             parameters.Add("@pageSize", pageSize);
 
-            const string getPagedNotesSql = "SELECT Id, Title, Text, CreatedOn, ModifiedOn FROM notes ORDER BY Id ASC OFFSET @pageSize * (@pageNumber - 1) ROWS FETCH NEXT @pageSize ROWS ONLY";
+            var getPagedNotesSql = GetPagedNotesSql();
 
+            var connection = this.GetConnection();
             var result = await connection.QueryAsync<NoteRepositoryDto>(getPagedNotesSql, parameters);
             if (result == null || !result.Any())
             {
@@ -244,7 +258,7 @@ namespace Infrastructure.Repositories
             using var activity = ActivitySource.StartActivity($"{nameof(SqlNoteRepository)}.{nameof(InternalGetAsync)}");
 
             const string getNoteSql =
-                "SELECT Id, Title, Text, CreatedOn, ModifiedOn FROM notes WHERE Id = @id";
+                "SELECT Id, Title, [Text], CreatedOn, ModifiedOn, NoteVersion, DeletedOn FROM notes WHERE Id = @id AND DeletedOn IS NULL";
 
             var parameters = new DynamicParameters();
             parameters.Add("@id", noteId);
@@ -274,7 +288,7 @@ namespace Infrastructure.Repositories
         {
             using var activity = ActivitySource.StartActivity($"{nameof(SqlNoteRepository)}.{nameof(InternalGetCountAsync)}");
             
-            var getCountSql = "SELECT count(Id) FROM notes";
+            var getCountSql = "SELECT count(Id) FROM notes WHERE DeletedOn IS NULL";
 
             var connection = this.GetConnection();
             if (connection == null)
@@ -296,7 +310,37 @@ namespace Infrastructure.Repositories
         private IDbConnection GetConnection()
         {
             using var activity = ActivitySource.StartActivity($"{nameof(SqlNoteRepository)}.{nameof(GetConnection)}");
+            if (_isSqlite)
+            {
+                return new SqliteConnection(_connectionString);
+            }
+
             return new SqlConnection(_connectionString);
+        }
+
+        private string GetCreateNoteSql()
+        {
+            if (_isSqlite)
+            {
+                return "INSERT INTO notes (Title, [Text], CreatedOn, NoteVersion) VALUES (@title, @text, @createdOn, 1);" +
+                       "SELECT Id, Title, [Text], CreatedOn, ModifiedOn, NoteVersion, DeletedOn FROM notes WHERE Id = last_insert_rowid();";
+            }
+
+            return "INSERT INTO notes (Title, [Text], CreatedOn, NoteVersion) " +
+                   "OUTPUT INSERTED.Id, INSERTED.Title, INSERTED.[Text], INSERTED.CreatedOn, INSERTED.ModifiedOn, INSERTED.NoteVersion, INSERTED.DeletedOn " +
+                   "VALUES (@title, @text, @createdOn, 1);";
+        }
+
+        private string GetPagedNotesSql()
+        {
+            if (_isSqlite)
+            {
+                return "SELECT Id, Title, [Text], CreatedOn, ModifiedOn, NoteVersion, DeletedOn " +
+                       "FROM notes WHERE DeletedOn IS NULL ORDER BY Id ASC LIMIT @pageSize OFFSET (@pageSize * (@pageNumber - 1));";
+            }
+
+            return "SELECT Id, Title, [Text], CreatedOn, ModifiedOn, NoteVersion, DeletedOn " +
+                   "FROM notes WHERE DeletedOn IS NULL ORDER BY Id ASC OFFSET @pageSize * (@pageNumber - 1) ROWS FETCH NEXT @pageSize ROWS ONLY;";
         }
     }
 }

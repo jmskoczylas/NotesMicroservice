@@ -16,6 +16,8 @@ namespace Application.Validation
             RuleFor(x => x.Note.Title).Length(1,50).OverridePropertyName(nameof(CreateNoteRequest.Note.Title));
             RuleFor(x => x.Note.Text).Length(1,200).OverridePropertyName(nameof(CreateNoteRequest.Note.Text));
             RuleFor(x => x.Note.Id).Equal(0).OverridePropertyName(nameof(CreateNoteRequest.Note.Id));
+            RuleFor(x => x.Note.NoteVersion).Equal(0).OverridePropertyName(nameof(CreateNoteRequest.Note.NoteVersion));
+            RuleFor(x => x.Note.DeletedOn).Null().OverridePropertyName(nameof(CreateNoteRequest.Note.DeletedOn));
         }
     }
 }

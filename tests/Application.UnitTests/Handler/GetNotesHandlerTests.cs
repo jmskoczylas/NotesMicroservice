@@ -37,7 +37,7 @@ namespace Application.UnitTests.Handler
                 this.Note,
                 this.Note,
                 this.Note,
-                new Note(101, "last note", "some text", DateTime.UtcNow, null)
+                new Note(101, "last note", "some text", DateTime.UtcNow, null, 1, null)
             };
 
             IReadOnlyCollection<INote> page2 = notes.TakeLast(3).ToList();
@@ -56,6 +56,8 @@ namespace Application.UnitTests.Handler
             Assert.Equal(notes?.LastOrDefault()?.Text, sut?.ValueOrDefault?.LastOrDefault()?.Text);
             Assert.Equal(notes?.LastOrDefault()?.ModifiedOn, sut?.ValueOrDefault?.LastOrDefault()?.ModifiedOn);
             Assert.Equal(notes?.LastOrDefault()?.CreatedOn, sut?.ValueOrDefault?.LastOrDefault()?.CreatedOn);
+            Assert.Equal(notes?.LastOrDefault()?.NoteVersion, sut?.ValueOrDefault?.LastOrDefault()?.NoteVersion);
+            Assert.Equal(notes?.LastOrDefault()?.DeletedOn, sut?.ValueOrDefault?.LastOrDefault()?.DeletedOn);
         }
     }
 }

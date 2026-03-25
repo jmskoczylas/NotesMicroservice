@@ -2,7 +2,7 @@
 using Domain.Interfaces;
 using Infrastructure.Models;
 
-namespace Application.Mappings.Converters
+namespace Infrastructure.Mappings.Converters
 {
     /// <summary>
     /// Converts an instance of a <see cref="NoteDto"/> to an <see cref="INote"/> instance.
@@ -20,6 +20,8 @@ namespace Application.Mappings.Converters
                 source.Title, 
                 source.Text,
                 source.CreatedOn, 
-                source.ModifiedOn);
+                source.ModifiedOn,
+                source.NoteVersion,
+                source.DeletedOn);
     }
 }

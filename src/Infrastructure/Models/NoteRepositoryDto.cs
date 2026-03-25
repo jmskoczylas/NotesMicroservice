@@ -29,6 +29,16 @@ namespace Infrastructure.Models
         public DateTime? ModifiedOn { get; set; }
 
         /// <summary>
+        /// Gets or sets note version used for optimistic concurrency.
+        /// </summary>
+        public int NoteVersion { get; set; }
+
+        /// <summary>
+        /// Gets or sets soft-delete timestamp.
+        /// </summary>
+        public DateTime? DeletedOn { get; set; }
+
+        /// <summary>
         /// Gets or sets the note Id.
         /// </summary>
         [Required]

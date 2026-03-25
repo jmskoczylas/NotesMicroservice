@@ -11,16 +11,19 @@ namespace Domain.Entities
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="id">The Id of the note.</param>
+        /// <param name="id">The ID of the note.</param>
         /// <param name="title">The title of the note.</param>
         /// <param name="notes">The note notes.</param>
         /// <param name="createdOn">The <see cref="DateTime"/> when the note was created.</param>
         /// <param name="modifiedOn">The <see cref="DateTime"/> when the note was last modified.</param>
+        /// <param name="noteVersion">The optimistic concurrency version.</param>
+        /// <param name="deletedOn">The <see cref="DateTime"/> when the note was soft-deleted.</param>
         /// <exception cref="ArgumentOutOfRangeException">id</exception>
         /// <exception cref="ArgumentNullException">title</exception>
-        protected Note(int id, string title, string notes, DateTime? createdOn, DateTime? modifiedOn)
+        protected Note(int id, string title, string notes, DateTime? createdOn, DateTime? modifiedOn, int noteVersion, DateTime? deletedOn)
         {
-            if (id < 0) throw new ArgumentOutOfRangeException(nameof(id));
+            ArgumentOutOfRangeException.ThrowIfNegative(id);
+            ArgumentOutOfRangeException.ThrowIfNegative(noteVersion);
 
             if (string.IsNullOrWhiteSpace(title))
             {
@@ -32,6 +35,8 @@ namespace Domain.Entities
             Title = title;
             CreatedOn = createdOn;
             ModifiedOn = modifiedOn;
+            NoteVersion = noteVersion;
+            DeletedOn = deletedOn;
         }
 
         /// <inheritdoc />
@@ -48,5 +53,11 @@ namespace Domain.Entities
 
         /// <inheritdoc />
         public DateTime? ModifiedOn { get; }
+
+        /// <inheritdoc />
+        public int NoteVersion { get; }
+
+        /// <inheritdoc />
+        public DateTime? DeletedOn { get; }
     }
 }
