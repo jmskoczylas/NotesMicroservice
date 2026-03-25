@@ -85,6 +85,16 @@ From CLI:
 DOTNET_ENVIRONMENT=Development ASPNETCORE_ENVIRONMENT=Development dotnet run --project src/Application/Application.csproj
 ```
 
+## Docker
+
+Notes to self:
+
+- [`Dockerfile`](/home/deck/Documents/GitHub/NotesMicroservice/Dockerfile)
+- [`docker/entrypoint.sh`](/home/deck/Documents/GitHub/NotesMicroservice/docker/entrypoint.sh)
+- image ownership now lives in this repo instead of the frontend repo
+- entrypoint initializes SQLite schema automatically if the database file does not exist
+- this is what the frontend `docker compose` setup now builds against
+
 ## API Overview
 
 Base route:
