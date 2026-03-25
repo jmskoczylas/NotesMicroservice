@@ -41,6 +41,17 @@ namespace Application
         /// <param name="services">The service collection used for dependency injection registration.</param>
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddPolicy("LocalFrontend", policyBuilder =>
+                {
+                    policyBuilder
+                        .WithOrigins("http://localhost:5173", "http://127.0.0.1:5173")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -91,6 +102,7 @@ namespace Application
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            app.UseCors("LocalFrontend");
 
             app.UseAuthorization();
 
