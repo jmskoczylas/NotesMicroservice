@@ -35,7 +35,7 @@ The app loads:
 
 Important settings:
 
-- `Db:Provider`: `Sqlite` or `SqlServer`
+- `Db:Provider`: `Sqlite`, `SqlServer`, or `Postgres`
 - `ConnectionStrings:Default`: active database connection string
 
 Development currently uses SQLite in [`src/Application/appsettings.Development.json`](/home/deck/Documents/GitHub/NotesMicroservice/src/Application/appsettings.Development.json).
@@ -94,6 +94,8 @@ Notes to self:
 - image ownership now lives in this repo instead of the frontend repo
 - entrypoint initializes SQLite schema automatically if the database file does not exist
 - this is what the frontend `docker compose` setup now builds against
+- Postgres support is wired in for Neon-style connection strings, but the container entrypoint still only auto-initializes SQLite
+- GitHub Actions workflow at [publish-container.yml](/home/deck/Documents/GitHub/NotesMicroservice/.github/workflows/publish-container.yml) publishes `ghcr.io/jmskoczylas/notes-api`
 
 ## API Overview
 
@@ -150,3 +152,4 @@ Import it and set `baseUrl` to wherever the app is running locally.
 - Add integration API tests
 - Add integration database tests
 - Add automated database initialization/migrations on startup
+- Add Postgres initialization/migration flow

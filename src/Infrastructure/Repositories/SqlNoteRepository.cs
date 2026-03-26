@@ -7,6 +7,7 @@ using Infrastructure.Models;
 using Infrastructure.Tracing;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Logging;
+using Npgsql;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -24,6 +25,7 @@ namespace Infrastructure.Repositories
         private readonly ILogger<SqlNoteRepository> _logger;
         private readonly string _connectionString;
         private readonly bool _isSqlite;
+        private readonly bool _isPostgres;
         private static readonly ActivitySource ActivitySource = new ActivitySource(nameof(SqlNoteRepository));
 
         /// <summary>
@@ -32,7 +34,7 @@ namespace Infrastructure.Repositories
         /// <param name="mapper">The mapper.</param>
         /// <param name="logger">An instance of <see cref="ILogger{TCategoryName}"/>.</param>
         /// <param name="connectionString">Database connection string.</param>
-        /// <param name="dbProvider">Database provider name: SqlServer or Sqlite.</param>
+        /// <param name="dbProvider">Database provider name: SqlServer, Sqlite, or Postgres.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="mapper"/>, <paramref name="logger"/>, <paramref name="connectionString"/>, or <paramref name="dbProvider"/> is <see langword="null"/>.</exception>
         public SqlNoteRepository(IMapper mapper,
             ILogger<SqlNoteRepository> logger,
@@ -49,12 +51,14 @@ namespace Infrastructure.Repositories
             }
 
             if (!string.Equals(dbProvider, "SqlServer", StringComparison.OrdinalIgnoreCase)
-                && !string.Equals(dbProvider, "Sqlite", StringComparison.OrdinalIgnoreCase))
+                && !string.Equals(dbProvider, "Sqlite", StringComparison.OrdinalIgnoreCase)
+                && !string.Equals(dbProvider, "Postgres", StringComparison.OrdinalIgnoreCase))
             {
-                throw new ArgumentOutOfRangeException(nameof(dbProvider), dbProvider, "Supported providers are SqlServer and Sqlite.");
+                throw new ArgumentOutOfRangeException(nameof(dbProvider), dbProvider, "Supported providers are SqlServer, Sqlite, and Postgres.");
             }
 
             _isSqlite = string.Equals(dbProvider, "Sqlite", StringComparison.OrdinalIgnoreCase);
+            _isPostgres = string.Equals(dbProvider, "Postgres", StringComparison.OrdinalIgnoreCase);
         }
 
         /// <inheritdoc cref="INoteRepository" />
@@ -109,7 +113,7 @@ namespace Infrastructure.Repositories
 
             var modifiedOn = DateTime.UtcNow;
             const string updateSql =
-                "UPDATE notes SET title = @title, [text] = @text, ModifiedOn = @modifiedOn, NoteVersion = NoteVersion + 1 WHERE id = @id AND DeletedOn IS NULL AND NoteVersion = @noteVersion";
+                "UPDATE notes SET title = @title, \"Text\" = @text, ModifiedOn = @modifiedOn, NoteVersion = NoteVersion + 1 WHERE id = @id AND DeletedOn IS NULL AND NoteVersion = @noteVersion";
             var parameters = new DynamicParameters();
             parameters.Add("@id", note.Id);
             parameters.Add("@title", note.Title);
@@ -259,7 +263,7 @@ namespace Infrastructure.Repositories
             using var activity = ActivitySource.StartActivity($"{nameof(SqlNoteRepository)}.{nameof(InternalGetAsync)}");
 
             const string getNoteSql =
-                "SELECT Id, Title, [Text], CreatedOn, ModifiedOn, NoteVersion, DeletedOn FROM notes WHERE Id = @id AND DeletedOn IS NULL";
+                "SELECT Id, Title, \"Text\", CreatedOn, ModifiedOn, NoteVersion, DeletedOn FROM notes WHERE Id = @id AND DeletedOn IS NULL";
 
             var parameters = new DynamicParameters();
             parameters.Add("@id", noteId);
@@ -316,6 +320,11 @@ namespace Infrastructure.Repositories
                 return new SqliteConnection(_connectionString);
             }
 
+            if (_isPostgres)
+            {
+                return new NpgsqlConnection(_connectionString);
+            }
+
             return new SqlConnection(_connectionString);
         }
 
@@ -323,20 +332,26 @@ namespace Infrastructure.Repositories
         {
             if (_isSqlite)
             {
-                return "INSERT INTO notes (Title, [Text], CreatedOn, NoteVersion) VALUES (@title, @text, @createdOn, 1);" +
-                       "SELECT Id, Title, [Text], CreatedOn, ModifiedOn, NoteVersion, DeletedOn FROM notes WHERE Id = last_insert_rowid();";
+                return "INSERT INTO notes (Title, \"Text\", CreatedOn, NoteVersion) VALUES (@title, @text, @createdOn, 1);" +
+                       "SELECT Id, Title, \"Text\", CreatedOn, ModifiedOn, NoteVersion, DeletedOn FROM notes WHERE Id = last_insert_rowid();";
+            }
+
+            if (_isPostgres)
+            {
+                return "INSERT INTO notes (Title, \"Text\", CreatedOn, NoteVersion) VALUES (@title, @text, @createdOn, 1) " +
+                       "RETURNING Id, Title, \"Text\", CreatedOn, ModifiedOn, NoteVersion, DeletedOn;";
             }
 
             return "INSERT INTO notes (Title, [Text], CreatedOn, NoteVersion) " +
-                   "OUTPUT INSERTED.Id, INSERTED.Title, INSERTED.[Text], INSERTED.CreatedOn, INSERTED.ModifiedOn, INSERTED.NoteVersion, INSERTED.DeletedOn " +
+                   "OUTPUT INSERTED.Id, INSERTED.Title, INSERTED.[Text] AS [Text], INSERTED.CreatedOn, INSERTED.ModifiedOn, INSERTED.NoteVersion, INSERTED.DeletedOn " +
                    "VALUES (@title, @text, @createdOn, 1);";
         }
 
         private string GetPagedNotesSql()
         {
-            if (_isSqlite)
+            if (_isSqlite || _isPostgres)
             {
-                return "SELECT Id, Title, [Text], CreatedOn, ModifiedOn, NoteVersion, DeletedOn " +
+                return "SELECT Id, Title, \"Text\", CreatedOn, ModifiedOn, NoteVersion, DeletedOn " +
                        "FROM notes WHERE DeletedOn IS NULL ORDER BY Id ASC LIMIT @pageSize OFFSET (@pageSize * (@pageNumber - 1));";
             }
 

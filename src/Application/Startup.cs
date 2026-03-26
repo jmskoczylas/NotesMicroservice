@@ -77,9 +77,10 @@ namespace Application
                 }
 
                 if (!string.Equals(provider, "SqlServer", StringComparison.OrdinalIgnoreCase)
-                    && !string.Equals(provider, "Sqlite", StringComparison.OrdinalIgnoreCase))
+                    && !string.Equals(provider, "Sqlite", StringComparison.OrdinalIgnoreCase)
+                    && !string.Equals(provider, "Postgres", StringComparison.OrdinalIgnoreCase))
                 {
-                    throw new InvalidOperationException("Unsupported Db:Provider. Use SqlServer or Sqlite.");
+                    throw new InvalidOperationException("Unsupported Db:Provider. Use SqlServer, Sqlite, or Postgres.");
                 }
 
                 return new SqlNoteRepository(mapper, logger, connectionString, provider);
